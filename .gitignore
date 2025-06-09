@@ -1,0 +1,90 @@
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.config.user
+*.resharper
+*.resharper.user
+*.cache
+*.obj
+*.tmp
+*.log
+*.err
+*.pid
+*.psess
+*.vsp
+*.safetensors
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+*.pdb
+*.dll
+*.exe
+*.dll.config
+*.exe.config
+*.xml
+*.json
+*.deps.json
+*.runtimeconfig.json
+*.config
+*.log
+*.zip
+*.nupkg
+*.snk
+*.tlb
+*.tlh
+*.bak
+*.old
+*.ilk
+*.aps
+*.bsc
+*.sbr
+*.mdf
+*.ldf
+*.sdf
+
+# NuGet packages
+packages/
+*.nupkg
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# JetBrains Rider
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Local Project files
+appsettings.Development.json
+appsettings.Staging.json
+appsettings.Production.json
+appsettings.Local.json
+*.user.json # Common for custom local settings
+*._UpgradeReport_Files/
+UpgradeLog.htm
+
+# Test results
+TestResults/
+*.trx
+
+# User-specific files
+*.user
+*.suo
+
+# Other common ignored files
+Thumbs.db
+Desktop.ini
+
+# Specific to .NET Core / .NET 5+
+# These folders typically contain build artifacts that don't need to be versioned.
+.fsharp/
+.paket/
+.nuget/
+.gitattributes
