@@ -11,8 +11,7 @@ namespace DeliveryApp.Infrastructure.Persistence.Configurations
             builder.ToTable("Motorcycles");
             
             builder.HasKey(m => m.Identifier);
-            builder.Property(m => m.Identifier)
-                .ValueGeneratedOnAdd();
+            builder.Property(m => m.Identifier);
 
             builder.Property(m => m.ModelName)
                 .IsRequired()
@@ -23,6 +22,9 @@ namespace DeliveryApp.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(m => m.LicensePlate)
                 .IsUnique();
+
+            builder.Property(m => m.CreatedTime)
+                .IsRequired();
 
             builder.Property(m => m.IsDeleted)
                 .HasDefaultValue(false);

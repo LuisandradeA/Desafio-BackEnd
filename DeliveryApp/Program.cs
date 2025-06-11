@@ -1,5 +1,15 @@
+using DeliveryApp.Application.DTOs;
+using DeliveryApp.Application.DTOs.Request;
+using DeliveryApp.Application.Services;
+using DeliveryApp.Application.Validators;
+using DeliveryApp.Application.Validators.Requests;
+using DeliveryApp.Domain.Interfaces;
 using DeliveryApp.Infrastructure.Persistence.Contexts;
+using DeliveryApp.Infrastructure.Repositories;
+using DeliveryApp.Services.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +22,19 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DeliveryAppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+// Register application services
+builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+
+// Register repositories
+builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
+
+//Register Validators
+// Registrar o FluentValidation (testar depois)
+//builder.Services.AddFluentValidationAutoValidation(); // Habilita validação automática nos controllers
+builder.Services.AddScoped<IValidator<CreateMotorcycleDTO>, CreateMotorcycleValidator>();
+builder.Services.AddScoped<IValidator<UpdateLicensePlateDTO>, UpdateLicensePlateValidator>();
+
 
 var app = builder.Build();
 

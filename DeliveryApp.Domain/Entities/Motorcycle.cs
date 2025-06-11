@@ -1,21 +1,33 @@
-﻿namespace DeliveryApp.Domain.Entities
+﻿using System.Xml.Serialization;
+
+namespace DeliveryApp.Domain.Entities
 {
     public class Motorcycle
     {
-        public Guid Identifier { get; set; }
-        public int Year { get; set; }
-        public string ModelName { get; set; }
-        public string LicensePlate { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime CreatedTime { get;} = DateTime.UtcNow;
+        public string Identifier { get; }
+        public int Year { get; }
+        public string ModelName { get; }
+        public string LicensePlate { get; private set; }
+        public bool IsDeleted { get; private set; }
+        public DateTime CreatedTime { get; } = DateTime.UtcNow;
 
-        public Motorcycle(Guid identifier, int year, string modelName, string licensePlate)
+        public Motorcycle(string identifier, int year, string modelName, string licensePlate)
         {
             Identifier = identifier;
             Year = year;
             ModelName = modelName;
             LicensePlate = licensePlate;
             IsDeleted = false;
+        }
+
+        public void SetLicensePlate(string licensePlate)
+        {
+            LicensePlate = licensePlate;
+        }
+
+        public void DeleteMotorcycle()
+        {
+            IsDeleted = true;
         }
     }
 }

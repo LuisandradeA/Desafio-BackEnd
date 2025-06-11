@@ -10,7 +10,7 @@ namespace DeliveryApp.Infrastructure.Persistence.Contexts
         {
         }
 
-        public DbSet<Motorcycle> MyProperty { get; set; }
+        public DbSet<Motorcycle> Motorcycles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

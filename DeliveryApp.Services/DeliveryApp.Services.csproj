@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DeliveryApp.Application\DeliveryApp.Application.csproj" />
+    <ProjectReference Include="..\DeliveryApp.Domain\DeliveryApp.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
