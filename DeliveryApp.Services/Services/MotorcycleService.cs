@@ -36,7 +36,7 @@ namespace DeliveryApp.Services.Services
                 var validationResult = await _createMotorcycleDTOValidator.ValidateAsync(dto);
                 if (!validationResult.IsValid)
                 {
-                    return new Response<DefaultResult>(false, string.Join(";", validationResult.Errors.Select(e => e.ErrorMessage)));
+                    return new Response<DefaultResult>(false, "Dados inválidos");
                 }
 
                 //Map DTO to Entity

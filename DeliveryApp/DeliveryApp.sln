@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryApp", "DeliveryApp.csproj", "{480475CD-36FB-487D-8A53-CF68D2FB2867}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryApp.Infrastructure", "..\DeliveryApp.Infrastructure\DeliveryApp.Infrastructure.csproj", "{38853271-F301-4EEB-A9C7-ABC134165D44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryApp.Services", "..\DeliveryApp.Services\DeliveryApp.Services.csproj", "{520E295A-7B7B-4FEC-9F0B-50A6ED1AD832}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryApp.UnitTests", "..\DeliveryApp.UnitTests\DeliveryApp.UnitTests.csproj", "{02B4475F-C654-4325-A828-34E72AD985CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{520E295A-7B7B-4FEC-9F0B-50A6ED1AD832}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{520E295A-7B7B-4FEC-9F0B-50A6ED1AD832}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{520E295A-7B7B-4FEC-9F0B-50A6ED1AD832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B4475F-C654-4325-A828-34E72AD985CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B4475F-C654-4325-A828-34E72AD985CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B4475F-C654-4325-A828-34E72AD985CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B4475F-C654-4325-A828-34E72AD985CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

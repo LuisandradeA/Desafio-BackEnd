@@ -1,5 +1,6 @@
 using DeliveryApp.Application.DTOs;
 using DeliveryApp.Application.DTOs.Request;
+using DeliveryApp.Application.DTOs.Request.Driver;
 using DeliveryApp.Application.Services;
 using DeliveryApp.Application.Validators;
 using DeliveryApp.Application.Validators.Requests;
@@ -9,7 +10,6 @@ using DeliveryApp.Infrastructure.Repositories;
 using DeliveryApp.Services.Services;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,15 +25,19 @@ builder.Services.AddDbContext<DeliveryAppDbContext>(options =>
 
 // Register application services
 builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
+builder.Services.AddScoped<IDriverService, DriverService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 
 // Register repositories
 builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
+builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 
 //Register Validators
 // Registrar o FluentValidation (testar depois)
 //builder.Services.AddFluentValidationAutoValidation(); // Habilita validação automática nos controllers
 builder.Services.AddScoped<IValidator<CreateMotorcycleDTO>, CreateMotorcycleValidator>();
 builder.Services.AddScoped<IValidator<UpdateLicensePlateDTO>, UpdateLicensePlateValidator>();
+builder.Services.AddScoped<IValidator<CreateDriverDTO>, CreateDriverValidator>();
 
 
 var app = builder.Build();
