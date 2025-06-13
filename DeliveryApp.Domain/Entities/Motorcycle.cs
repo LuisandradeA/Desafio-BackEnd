@@ -11,6 +11,9 @@ namespace DeliveryApp.Domain.Entities
         public bool IsDeleted { get; private set; }
         public DateTime CreatedTime { get; } = DateTime.UtcNow;
 
+        // Navigation properties
+        public ICollection<Rentals> Rentals { get; set; }
+
         public Motorcycle(string identifier, int year, string modelName, string licensePlate)
         {
             Identifier = identifier;

@@ -3,6 +3,7 @@ using System;
 using DeliveryApp.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeliveryApp.Infrastructure.Migrations
 {
     [DbContext(typeof(DeliveryAppDbContext))]
-    partial class DeliveryAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250613041414_Add_Rentals_table")]
+    partial class Add_Rentals_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

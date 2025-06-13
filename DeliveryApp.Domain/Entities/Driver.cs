@@ -11,6 +11,9 @@
         public string? LicenseImagePath { get; private set; }
         public DateTime CreatedTime { get; } = DateTime.UtcNow;
 
+        // Navigation properties
+        public ICollection<Rentals> Rentals { get; set; }
+
         public Driver(string identifier, 
             string name, 
             string document, 

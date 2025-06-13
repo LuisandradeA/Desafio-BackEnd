@@ -24,6 +24,7 @@ namespace DeliveryApp.Infrastructure.Repositories
         public async Task<Driver?> GetByIdAsync(string id)
         {
             return await _context.Drivers
+                .Include(d=>d.Rentals)
                 .FirstOrDefaultAsync(d => d.Identifier == id);
         }
 

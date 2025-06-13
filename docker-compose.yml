@@ -1,0 +1,45 @@
+---
+version: "3.8"
+services:
+  api:
+    image: mcr.microsoft.com/dotnet/aspnet:8.0
+    container_name: delivery_api
+    restart: unless-stopped
+    ports:
+      - 5000:80
+    volumes:
+      - ./DeliveryApp:/app
+      - ./uploads:/app/uploads
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Postgres=Host=db;Port=5432;Database=dev_delivery_db;Username=admin;Password=admin123
+      - DOTNET_URLS=http://+:80
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c " echo 'Aguardando PostgreSQL...'; while ! nc -z db 5432; do
+      sleep 1; done; echo 'PostgreSQL pronto!'; dotnet ef database update
+      --project /app/DeliveryApp.Infrastructure; dotnet
+      /app/src/DeliveryApp/bin/Debug/net8.0/DeliveryApp.dll; "
+  db:
+    image: postgres:15
+    container_name: delivery_db
+    environment:
+      POSTGRES_DB: dev_delivery_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U admin -d dev_delivery_db
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  pgdata: null

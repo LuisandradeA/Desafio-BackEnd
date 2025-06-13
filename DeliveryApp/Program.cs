@@ -1,6 +1,7 @@
 using DeliveryApp.Application.DTOs;
 using DeliveryApp.Application.DTOs.Request;
 using DeliveryApp.Application.DTOs.Request.Driver;
+using DeliveryApp.Application.DTOs.Request.Rentals;
 using DeliveryApp.Application.Services;
 using DeliveryApp.Application.Validators;
 using DeliveryApp.Application.Validators.Requests;
@@ -27,10 +28,12 @@ builder.Services.AddDbContext<DeliveryAppDbContext>(options =>
 builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IRentalService, RentalService>();
 
 // Register repositories
 builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();
 builder.Services.AddScoped<IDriverRepository, DriverRepository>();
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 
 //Register Validators
 // Registrar o FluentValidation (testar depois)
@@ -38,9 +41,17 @@ builder.Services.AddScoped<IDriverRepository, DriverRepository>();
 builder.Services.AddScoped<IValidator<CreateMotorcycleDTO>, CreateMotorcycleValidator>();
 builder.Services.AddScoped<IValidator<UpdateLicensePlateDTO>, UpdateLicensePlateValidator>();
 builder.Services.AddScoped<IValidator<CreateDriverDTO>, CreateDriverValidator>();
+builder.Services.AddScoped<IValidator<CreateRentalDTO>, CreateRentalValidator>();
 
 
 var app = builder.Build();
+
+// APLICA AS MIGRATIONS AUTOMATICAMENTE
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DeliveryAppDbContext>();
+    db.Database.Migrate(); // <--- aplica as migrations aqui
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

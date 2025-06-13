@@ -12,6 +12,7 @@ namespace DeliveryApp.Infrastructure.Persistence.Contexts
 
         public DbSet<Motorcycle> Motorcycles { get; set; }
         public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Rentals> Rentals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,6 +20,7 @@ namespace DeliveryApp.Infrastructure.Persistence.Contexts
 
             modelBuilder.ApplyConfiguration(new MotorcycleConfigurations());
             modelBuilder.ApplyConfiguration(new DriverConfigurations());
+            modelBuilder.ApplyConfiguration(new RentalsConfigurations());
         }
     }
 }

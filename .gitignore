@@ -88,3 +88,4 @@ Desktop.ini
 .paket/
 .nuget/
 .gitattributes
+/DeliveryApp/publish
