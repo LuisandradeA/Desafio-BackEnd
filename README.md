@@ -1,76 +1,47 @@
-# Desafio backend Mottu.
-Seja muito bem-vindo ao desafio backend da Mottu, obrigado pelo interesse em fazer parte do nosso time e ajudar a melhorar a vida de milhares de pessoas.
+# Desafio backend.
+Seja muito bem-vindo ao desafio backend, obrigado pelo interesse em fazer parte do nosso time e ajudar a melhorar a vida de milhares de pessoas.
 
-## Instruções
-- O desafio é válido para diversos níveis, portanto não se preocupe se não conseguir resolver por completo.
-- A aplicação só será avaliada se estiver rodando, se necessário crie um passo a passo para isso.
-- Faça um clone do repositório em seu git pessoal para iniciar o desenvolvimento e não cite nada relacionado a Mottu.
-- Após teste realizado, favor encaminha-lo via Link abaixo:
-Link: [Formulário - Mottu - Desafio Backend](https://forms.office.com/r/25yMPCax5S)
+# Visão Geral
+Esta aplicação foi desenvolvida utilizando .NET 8 e segue princípios modernos de arquitetura, visando escalabilidade, manutenibilidade e facilidade de integração com outros sistemas.
+##Organização do Projeto
+O projeto está estruturado em múltiplos módulos, cada um com responsabilidade bem definida:
+- API: Responsável por expor endpoints RESTful para consumo externo.
+- Domínio: Contém as entidades de negócio, regras e validações.
+- Infraestrutura: Implementa o acesso a dados, integrações externas e configurações de serviços.
+- Consumers: Serviços que consomem mensagens de filas (RabbitMQ).
+- Repositórios: Abstração e implementação do acesso a dados (relacional e NoSQL).
+## Banco de Dados Relacional (PostgreSQL)
+A aplicação utiliza PostgreSQL como banco de dados relacional principal. O acesso é realizado via Entity Framework Core, utilizando o padrão Code First. As entidades do domínio são mapeadas para tabelas, e as migrações são gerenciadas pelo EF Core, facilitando a evolução do schema.
+## Entity Framework Core (Code First)
+O EF Core é utilizado para mapear as classes do domínio para o banco de dados. As migrações são criadas e aplicadas via comandos do EF Core, garantindo que o banco esteja sempre sincronizado com o modelo da aplicação.
+## Mensageria com RabbitMQ
+A comunicação assíncrona entre serviços é realizada via RabbitMQ. Os consumers escutam filas específicas e processam eventos recebidos, promovendo desacoplamento e escalabilidade.
+## Validações com FluentValidation
+O FluentValidation é utilizado para validar objetos de entrada (DTOs, comandos, etc.) de forma centralizada e desacoplada das entidades. As regras de validação são implementadas em classes específicas, facilitando manutenção e testes.
+## Padrões e Boas Práticas
+- Injeção de Dependência: Utilizada em toda a aplicação para promover baixo acoplamento.
+- Separação de Responsabilidades: Cada camada/módulo tem uma responsabilidade clara.
+- Configuração via appsettings: Strings de conexão, configurações de RabbitMQ e outros parâmetros são definidos via arquivos de configuração.
+## Como Executar
+1.	Pré-requisitos
+- Certifique-se de ter o Docker instalado em sua máquina.
+- Tenha o .NET 8 SDK instalado para executar os projetos localmente.
+2.	Subindo os recursos necessários
+- No diretório raiz do projeto, execute o comando abaixo para subir os containers do PostgreSQL, RabbitMQ e demais dependências:
+docker-compose up --build -d
+3.	Executando o Consumer
+- Execute o consumer com o comando:
+ cd ./DeliveryApp.CreatedMotorcycleEventConsumer
+- Execute o consumer com o comando:
+dotnet run
+4.	Executando a API
+- Você pode executar a API normalmente pelo Visual Studio 2022 (F5) ou via terminal:
+ cd ./DevliveryApp
+ dotnet run
+6.	Migrações do Banco de Dados
+- As migrações serão aplicadas ao rodar a api. Caso necessário, execute as migrações do Entity Framework Core para garantir que o banco esteja atualizado:
+dotnet ef database update
 
-## Requisitos não funcionais 
-- A aplicação deverá ser construida com .Net utilizando C#.
-- Utilizar apenas os seguintes bancos de dados (Postgress, MongoDB)
-    - Não utilizar PL/pgSQL
-- Escolha o sistema de mensageria de sua preferencia( RabbitMq, Sqs/Sns , Kafka, Gooogle Pub/Sub ou qualquer outro)
 
-## Aplicação a ser desenvolvida
-Seu objetivo é criar uma aplicação para gerenciar aluguel de motos e entregadores. Quando um entregador estiver registrado e com uma locação ativa poderá também efetuar entregas de pedidos disponíveis na plataforma.
-
-Iremos executar um teste de integração para validar os cenários de uso. Por isso, sua aplicação deve seguir exatamente as especificações de API`s Rest do nosso Swager: request, response e status code.
-Garanta que os atributos dos JSON`s e estão de acordo com o Swagger abaixo.
-
-Swagger de referência:
-https://app.swaggerhub.com/apis-docs/Mottu/mottu_desafio_backend/1.0.0
-
-### Casos de uso
-- Eu como usuário admin quero cadastrar uma nova moto.
-  - Os dados obrigatórios da moto são Identificador, Ano, Modelo e Placa
-  - A placa é um dado único e não pode se repetir.
-  - Quando a moto for cadastrada a aplicação deverá gerar um evento de moto cadastrada
-    - A notificação deverá ser publicada por mensageria.
-    - Criar um consumidor para notificar quando o ano da moto for "2024"
-    - Assim que a mensagem for recebida, deverá ser armazenada no banco de dados para consulta futura.
-- Eu como usuário admin quero consultar as motos existentes na plataforma e conseguir filtrar pela placa.
-- Eu como usuário admin quero modificar uma moto alterando apenas sua placa que foi cadastrado indevidamente
-- Eu como usuário admin quero remover uma moto que foi cadastrado incorretamente, desde que não tenha registro de locações.
-- Eu como usuário entregador quero me cadastrar na plataforma para alugar motos.
-    - Os dados do entregador são( identificador, nome, cnpj, data de nascimento, número da CNHh, tipo da CNH, imagemCNH)
-    - Os tipos de cnh válidos são A, B ou ambas A+B.
-    - O cnpj é único e não pode se repetir.
-    - O número da CNH é único e não pode se repetir.
-- Eu como entregador quero enviar a foto de minha cnh para atualizar meu cadastro.
-    - O formato do arquivo deve ser png ou bmp.
-    - A foto não poderá ser armazenada no banco de dados, você pode utilizar um serviço de storage( disco local, amazon s3, minIO ou outros).
-- Eu como entregador quero alugar uma moto por um período.
-    - Os planos disponíveis para locação são:
-        - 7 dias com um custo de R$30,00 por dia
-        - 15 dias com um custo de R$28,00 por dia
-        - 30 dias com um custo de R$22,00 por dia
-        - 45 dias com um custo de R$20,00 por dia
-        - 50 dias com um custo de R$18,00 por dia
-    - A locação obrigatóriamente tem que ter uma data de inicio e uma data de término e outra data de previsão de término.
-    - O inicio da locação obrigatóriamente é o primeiro dia após a data de criação.
-    - Somente entregadores habilitados na categoria A podem efetuar uma locação
-- Eu como entregador quero informar a data que irei devolver a moto e consultar o valor total da locação.
-    - Quando a data informada for inferior a data prevista do término, será cobrado o valor das diárias e uma multa adicional
-        - Para plano de 7 dias o valor da multa é de 20% sobre o valor das diárias não efetivadas.
-        - Para plano de 15 dias o valor da multa é de 40% sobre o valor das diárias não efetivadas.
-    - Quando a data informada for superior a data prevista do término, será cobrado um valor adicional de R$50,00 por diária adicional.
-    
-
-## Diferenciais 🚀
-- Testes unitários
-- Testes de integração
-- EntityFramework e/ou Dapper
-- Docker e Docker Compose
-- Design Patterns
-- Documentação
-- Tratamento de erros
-- Arquitetura e modelagem de dados
-- Código escrito em língua inglesa
-- Código limpo e organizado
-- Logs bem estruturados
-- Seguir convenções utilizadas pela comunidade
   
 
