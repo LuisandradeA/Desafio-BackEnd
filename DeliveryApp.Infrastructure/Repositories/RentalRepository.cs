@@ -21,10 +21,17 @@ namespace DeliveryApp.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<Rentals?> GetRentalById(string id)
+        public async Task<Rentals?> GetRentalByIdAsync(string id)
         {
             return await _context.Rentals
                 .FirstOrDefaultAsync(d => d.Identifier == id);
+        }
+
+        public async Task<bool> UpdateAsync(Rentals rental)
+        {
+            _context.Rentals.Update(rental);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

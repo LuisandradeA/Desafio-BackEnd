@@ -9,6 +9,9 @@ using DeliveryApp.Domain.Interfaces;
 using DeliveryApp.Infrastructure.Persistence.Contexts;
 using DeliveryApp.Infrastructure.Repositories;
 using DeliveryApp.Services.Services;
+using EasyNetQ;
+using EasyNetQ.DI;
+using EasyNetQ.Serialization.SystemTextJson;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +32,9 @@ builder.Services.AddScoped<IMotorcycleService, MotorcycleService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IRentalService, RentalService>();
+
+builder.Services.AddSingleton<IMessageBusService, MessageBusService>();
+
 
 // Register repositories
 builder.Services.AddScoped<IMotorcycleRepository, MotorcycleRepository>();

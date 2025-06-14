@@ -1,6 +1,5 @@
 ﻿using DeliveryApp.Application.DTOs.Request.Rentals;
 using DeliveryApp.Application.DTOs.Response;
-using DeliveryApp.Application.DTOs.Response.Motorcycle;
 using DeliveryApp.Application.DTOs.Response.Rental;
 using DeliveryApp.Application.Services;
 using DeliveryApp.Domain.Entities;
@@ -27,6 +26,7 @@ namespace DeliveryApp.Services.Services
             _driverRepository = driverRepository;
             _motorcycleRepository = motorcycleRepository;
         }
+
         public async Task<Response<DefaultResult>> CreateRentalAsync(CreateRentalDTO dto)
         {
             try
@@ -111,7 +111,7 @@ namespace DeliveryApp.Services.Services
                     };
                 }
 
-                var result = await _repository.GetRentalById(id);
+                var result = await _repository.GetRentalByIdAsync(id);
 
                 if (result is null)
                 {
@@ -155,6 +155,96 @@ namespace DeliveryApp.Services.Services
                 50 => 18.00m,
                 _ => 0
             };
+        }
+
+        public async Task<Response<DefaultResult>> ReturnRentalAsync(string id, DateTime returnDate)
+        {
+            try
+            {
+                var rental = await _repository.GetRentalByIdAsync(id);
+
+                if (!IsRentalReturnValid(id, returnDate, rental))
+                {
+                    return new Response<DefaultResult>(false, "Dados inválidos")
+                    {
+                        IsBadRequest = true
+                    };
+                }
+
+                if(returnDate < rental.PrevisionTime)
+                {
+                    RenturnRentalBeforeEnds(rental, returnDate);
+                }
+                else if (returnDate > rental.PrevisionTime)
+                {
+                    ReturnRentalAfterEnds(rental, returnDate);
+                }
+                else
+                {
+                    // Caso a devolução seja exatamente na data prevista
+                    rental.ReturnRental(returnDate);
+                }
+                
+                await _repository.UpdateAsync(rental);
+                return new Response<DefaultResult>(true, "Data de devolução informada com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return new Response<DefaultResult>(false, ex.Message)
+                {
+                    IsServerError = true
+                };
+            }
+        }
+
+        private void ReturnRentalAfterEnds(Rentals rental, DateTime returnDate)
+        {
+            // Dias adicionais
+            var extraDays = (returnDate - rental.PrevisionTime).TotalDays;
+
+            const decimal dailyAdditionalCharge = 50.00m;
+
+            var additionalCharge = dailyAdditionalCharge * (decimal)extraDays;
+
+            rental.SetAdditionalFee(additionalCharge);
+            rental.ReturnRental(returnDate);
+        }
+
+        private void RenturnRentalBeforeEnds(Rentals rental, DateTime returnDate)
+        {
+            // Dias não utilizados
+            var unusedDays = Math.Floor((rental.PrevisionTime - returnDate).TotalDays);
+
+            var unusedDaysValue = GetPlanPrice(rental.PlanType) * (decimal)unusedDays;
+
+            decimal fine = 0;
+            if (rental.PlanType == 7)
+            {
+                fine = unusedDaysValue * 0.2m; // 20% de multa
+            }
+            else if (rental.PlanType == 15)
+            {
+                fine = unusedDaysValue * 0.4m; // 40% de multa
+            }
+
+            rental.Price = rental.Price - unusedDaysValue;
+            rental.SetAdditionalFee(fine);
+            rental.ReturnRental(returnDate);
+        }
+
+        private bool IsRentalReturnValid(string id, DateTime returnDate, Rentals rental)
+        {
+            if (rental is null)
+            {
+                return false;
+            }
+
+            if (returnDate <= rental.StartTime)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

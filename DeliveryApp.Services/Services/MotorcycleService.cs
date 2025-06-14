@@ -1,4 +1,5 @@
 ﻿using DeliveryApp.Application.DTOs;
+using DeliveryApp.Application.DTOs.Messaging;
 using DeliveryApp.Application.DTOs.Request;
 using DeliveryApp.Application.DTOs.Response;
 using DeliveryApp.Application.DTOs.Response.Motorcycle;
@@ -6,6 +7,8 @@ using DeliveryApp.Application.Services;
 using DeliveryApp.Domain.Entities;
 using DeliveryApp.Domain.Interfaces;
 using FluentValidation;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DeliveryApp.Services.Services
 {
@@ -16,16 +19,18 @@ namespace DeliveryApp.Services.Services
         private readonly IMotorcycleRepository _repository;
         private readonly IValidator<CreateMotorcycleDTO> _createMotorcycleDTOValidator;
         private readonly IValidator<UpdateLicensePlateDTO> _updateLicensePlateValidator;
+        private readonly IMessageBusService _messageBusService;
 
         public MotorcycleService(
             IMotorcycleRepository repository,
             IValidator<CreateMotorcycleDTO> createMotorcycleDTOValidator,
-            IValidator<UpdateLicensePlateDTO> updateLicensePlateValidator
-            )
+            IValidator<UpdateLicensePlateDTO> updateLicensePlateValidator,
+            IMessageBusService messageBusService)
         {
             _repository = repository;
             _createMotorcycleDTOValidator = createMotorcycleDTOValidator;
             _updateLicensePlateValidator = updateLicensePlateValidator;
+            _messageBusService = messageBusService;
         }
 
         public async Task<Response<DefaultResult>> CreateMotorcycleAsync(CreateMotorcycleDTO dto)
@@ -48,6 +53,14 @@ namespace DeliveryApp.Services.Services
 
                 //Save the entity to the repository
                 var result = await _repository.CreateAsync(motorcycle);
+
+                _messageBusService.Publish(JsonSerializer.Serialize(new CreatedMotorcycleEventMessage { 
+                    Id = motorcycle.Identifier,
+                    Year = motorcycle.Year,
+                    ModelName = motorcycle.ModelName,
+                    LicensePlate = motorcycle.LicensePlate
+                }));
+
                 return new Response<DefaultResult>(true);
             }
             catch (Exception ex)

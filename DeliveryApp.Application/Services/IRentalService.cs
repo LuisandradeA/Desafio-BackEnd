@@ -8,5 +8,6 @@ namespace DeliveryApp.Application.Services
     {
         Task<Response<DefaultResult>> CreateRentalAsync(CreateRentalDTO dto);
         Task<Response<GetRentalResponseDTO>> GetRentalByIdAsync(string id);
+        Task<Response<DefaultResult>> ReturnRentalAsync(string id, DateTime returnDate);
     }
 }

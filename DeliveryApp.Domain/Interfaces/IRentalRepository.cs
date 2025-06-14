@@ -5,6 +5,7 @@ namespace DeliveryApp.Domain.Interfaces
     public interface IRentalRepository
     {
         Task<bool> CreateAsync(Rentals rental);
-        Task<Rentals?> GetRentalById(string id);
+        Task<Rentals?> GetRentalByIdAsync(string id);
+        Task<bool> UpdateAsync(Rentals rental);
     }
 }

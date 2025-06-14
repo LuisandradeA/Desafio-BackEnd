@@ -14,12 +14,19 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Postgres=Host=db;Port=5432;Database=dev_delivery_db;Username=admin;Password=admin123
       - DOTNET_URLS=http://+:80
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=guest
+      - RabbitMQ__Password=guest
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     command: >
       sh -c " echo 'Aguardando PostgreSQL...'; while ! nc -z db 5432; do
-      sleep 1; done; echo 'PostgreSQL pronto!'; dotnet ef database update
+      sleep 1; done; echo 'PostgreSQL pronto!'; echo 'Aguardando RabbitMQ...';
+      while ! nc -z rabbitmq 5672; do sleep 1; done;
+      echo 'RabbitMQ pronto!'; dotnet ef database update
       --project /app/DeliveryApp.Infrastructure; dotnet
       /app/src/DeliveryApp/bin/Debug/net8.0/DeliveryApp.dll; "
   db:
@@ -41,5 +48,47 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: delivery_rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  mongo:
+    image: mongo:6.0
+    container_name: delivery_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  consumer:
+    image: mcr.microsoft.com/dotnet/aspnet:8.0
+    container_name: delivery_consumer
+    environment:
+      - RabbitMQ__Host=rabbitmq
+      - MongoDB__ConnectionString=mongodb://admin:admin123@mongo:27017
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
 volumes:
-  pgdata: null
+  pgdata:
+  mongodb_data:

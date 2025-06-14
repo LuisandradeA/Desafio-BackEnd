@@ -5,13 +5,13 @@
         public string Identifier { get; }
         public int PlanType { get; }
         public DateTime StartTime { get; }
-        public DateTime EndTime { get; }
+        public DateTime EndTime { get; private set; }
         public DateTime PrevisionTime { get; }
         public string MotorcycleId { get; }
         public string DriverId { get; }
         public decimal Price { get; set; }
-        public decimal? AdditionalFee { get; set; }
-        public bool IsActive { get; set; }
+        public decimal? AdditionalFee { get; private set; }
+        public bool IsActive { get; private set; }
         public DateTime CreatedTime { get; } = DateTime.UtcNow.ToUniversalTime();
 
         // Navigation properties
@@ -37,6 +37,17 @@
             DriverId = driverId;
             Price = price;
             IsActive = true;
+        }
+
+        public void SetAdditionalFee(decimal additionalFee)
+        {
+            AdditionalFee = additionalFee;
+        }
+
+        public void ReturnRental(DateTime endTime)
+        {
+            EndTime = endTime;
+            IsActive = false;
         }
     }
 }

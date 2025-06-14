@@ -46,5 +46,20 @@ namespace DeliveryApp.Controllers
 
             return NotFound(response);
         }
+
+        [HttpPut]
+        [Route("{id}/devolucao")]
+        public async Task<IActionResult> PutAsync(string id, [FromBody] ReturnRentalDTO dto, [FromServices] IRentalService _service)
+        {
+            var result = await _service.ReturnRentalAsync(id,dto.ReturnDate);
+            var response = new { Mensagem = result.Message };
+            if (result.Success)
+                return Ok();
+            if (result.IsServerError)
+            {
+                return StatusCode(500, response);
+            }
+            return BadRequest(response);
+        }
     }
 }
