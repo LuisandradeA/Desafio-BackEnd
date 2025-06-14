@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DeliveryApp.Application\DeliveryApp.Application.csproj" />
     <ProjectReference Include="..\DeliveryApp.Domain\DeliveryApp.Domain.csproj" />
     <ProjectReference Include="..\DeliveryApp.Services\DeliveryApp.Services.csproj" />

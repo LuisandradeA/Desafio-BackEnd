@@ -8,7 +8,6 @@ using DeliveryApp.Domain.Entities;
 using DeliveryApp.Domain.Interfaces;
 using FluentValidation;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace DeliveryApp.Services.Services
 {

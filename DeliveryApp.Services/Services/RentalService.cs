@@ -84,14 +84,15 @@ namespace DeliveryApp.Services.Services
         {
             var driver = await _driverRepository.GetByIdAsync(driverId);
             return driver != null &&
-                !driver.Rentals.Any(x => x.IsActive) &&
-                driver.LicenseType == "A";
+                   (driver.Rentals == null || !driver.Rentals.Any(x => x.IsActive)) &&
+                   driver.LicenseType == "A";
         }
 
         private async Task<bool> IsMotorcycleAvailableAsync(string motorcycleId)
         {
             var motorcycle = await _motorcycleRepository.GetMotorcycleByIdAsync(motorcycleId);
-            return motorcycle != null && !motorcycle.Rentals.Any(x => x.IsActive);
+            return motorcycle != null && 
+                (motorcycle.Rentals == null || !motorcycle.Rentals.Any(x => x.IsActive));
         }
 
         private static DateTime GetNextDayAtMidnight(DateTime date)
